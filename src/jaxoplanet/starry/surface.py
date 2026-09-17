@@ -213,16 +213,9 @@ class Surface(eqx.Module):
         Returns:
             float: intensity of the map at the given latitude and longitude
         """
-        lon = lon + jnp.pi / 2  # convention, 0 lon faces the observer
-        lat = jnp.pi / 2 - lat  # convention, latitude 0 is equator
-        x = jnp.sin(lat) * jnp.cos(lon)
-        y = jnp.sin(lat) * jnp.sin(lon)
-        z = jnp.cos(lat) * jnp.ones_like(x)
-
-        axis = full_rotation_axis_angle(self.inc - jnp.pi / 2, self.obl, 0.0, 0.0)
-        axis = jnp.array(axis[0:3]) * axis[-1]
-        rotation = Rotation.from_rotvec(axis)
-        x, y, z = rotation.apply(jnp.array([x, y, z]).T).T
+        x = jnp.sin(lon) * jnp.cos(lat)
+        y = jnp.sin(lat)
+        z = jnp.cos(lon) * jnp.cos(lat)
 
         return self._intensity(x, y, z)
 
